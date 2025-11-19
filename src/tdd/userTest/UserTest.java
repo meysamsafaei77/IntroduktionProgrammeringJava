@@ -210,5 +210,6 @@ public class UserTest {
         myUser.setPassword("hemligdfdgdfd");
         assertEquals("hemligt!", myUser.getPassword());
 
+        // hej
     }
 }
