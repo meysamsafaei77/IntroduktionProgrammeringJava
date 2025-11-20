@@ -26,6 +26,17 @@ package tdd.userTest;
 
 // Lösenordet måste ha minst en liten och en stor bokstav (a-z, A-Z)
 
+// En användare börjar alltid typeOfUser som en ”normal” user.
+// Skriv test som hämtar detta attribut
+
+//Det går att ändra typeOfUser genom en metod
+
+//De enda korrekta värden för typeOfUser är ”normal”, ”admin” och ”super”
+
+// typeOfUser kan även vara ”gold member”
+
+//När man har loggat in 20 gånger blir man automatiskt ”gold member”
+
 import org.junit.jupiter.api.Test; // Importerar verktyget för att testa
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -194,22 +205,227 @@ public class UserTest {
 
         // Här försöker vi skapa en User, trots att klassen inte finns än!
         // Detta är TDD: Vi skriver koden SOM OM klassen redan fanns.
-        User myUser = new User("Anna","hemligt!");
+        User myUser = new User("Anna","Hemligt!");
 
         // Test för metoden hämta namn
         assertEquals("Anna", myUser.getUserName());
 
         // Test för metoden hämta password
-        assertEquals("hemligt!", myUser.getPassword());
+        assertEquals("Hemligt!", myUser.getPassword());
 
         // Test för lägga till ett nytt namn och sen hämta den
         myUser.setUserName("Stig4");
         assertEquals("Anna", myUser.getUserName());
 
         // Test för lägga till ett nytt password och sen hämta den
-        myUser.setPassword("hemligdfdgdfd");
-        assertEquals("hemligt!", myUser.getPassword());
+        myUser.setPassword("hemligtärhemligt?!");
+        assertEquals("Hemligt!", myUser.getPassword());
 
-        // hej
+    }
+
+    @Test
+    public void testDefaultUserType () {
+
+        // 1. Skapa ny användare
+        User myUser = new User("Anna", "Lösenord1!");
+
+        // 2. Kontrollera att typen automatiskt blev "normal"
+        // (Den här raden kommer bli Röd eftersom metoden inte finns än)
+        assertEquals("normal", myUser.getTypeOfUser());
+
+    }
+
+
+    @Test
+    public void testChangeUserType () {
+
+        // 1. Skapa ny användare
+        User myUser = new User("Anna", "Lösenord1!");
+
+        // 2. Kontrollera att typen automatiskt blev "normal"
+        assertEquals("normal", myUser.getTypeOfUser());
+
+        // Test för lägga till ett nytt namn och sen hämta den
+        myUser.setTypeOfUser("admin");
+        assertEquals("admin", myUser.getTypeOfUser());
+
+    }
+
+
+    @Test
+    public void testSetInvalidUserType () {
+
+        // 1. Skapa ny användare
+        User myUser = new User("Anna", "Lösenord1!");
+
+        // 2. Kontrollera att typen automatiskt blev "normal"
+        assertEquals("normal", myUser.getTypeOfUser());
+
+        // Test för lägga till ett nytt namn och sen hämta den
+        myUser.setTypeOfUser("hacker");
+        assertEquals("normal", myUser.getTypeOfUser());
+
+    }
+
+    @Test
+    public void testSetGoldMember () {
+
+        // 1. Skapa ny användare
+        User myUser = new User("Anna", "Lösenord1!");
+
+        // 2. Kontrollera att typen automatiskt blev "normal"
+        assertEquals("normal", myUser.getTypeOfUser());
+
+        // Test för lägga till ett nytt namn och sen hämta den
+        myUser.setTypeOfUser("gold member");
+        assertEquals("gold member", myUser.getTypeOfUser());
+
+    }
+
+
+    @Test
+    public void testAutomaticGoldMember () {
+
+        // 1. Skapa ny användare
+        User myUser = new User("Anna", "Lösenord1!");
+
+        // 2. Kontrollera att typen automatiskt blev "normal"
+        assertEquals("normal", myUser.getTypeOfUser());
+
+        // Test för lägga till ett nytt namn och sen hämta den
+        myUser.setTypeOfUser("normal");
+
+        for (int i = 0; i < 20; i++) {
+            myUser.login();
+        }
+        assertEquals("gold member", myUser.getTypeOfUser());
+
+    }
+
+    // Det finns en intern valuta ”solidus” som man kan göra uttag ifrån.
+    // Man kan såklart enbart göra så stort uttag som man har ”råd med”.
+    // Alla börjar med 5 solidus och när man blir gold member får man
+    // 20 solidus automatiskt. Användarna vill såklart kunna ta reda på hur
+    // många solidus de har. Varje gång man loggar in får man en solidus.
+    // Med solidus kan man köpa merch: hoodie kostar 20 solidus, t-shirt 15
+    // solidus och stickers 5 solidus. Detta är en massa funktioner,
+    // utveckla dem därför med flera steg enligt TDD.
+
+    @Test
+    public void testInitialSolidus() {
+        // 1. Skapa ny användare
+        User myUser = new User("Anna", "Lösenord1!");
+
+        // 2. Kontrollera att hon har 5 solidus direkt
+        assertEquals(5, myUser.getSolidus());
+    }
+
+
+    @Test
+    public void testLoginEarnsSolidus () {
+        // 1. Skapa ny användare
+        User myUser = new User("Anna", "Lösenord1!");
+
+        // 2. Kontrollera att hon har 5 solidus direkt
+        assertEquals(5, myUser.getSolidus());
+        myUser.login();
+
+        // 3. Anropa metoden solidus ocg hämta solidus
+        int solius = myUser.getSolidus();
+        assertEquals(6, myUser.getSolidus());
+    }
+
+    @Test
+    public void testGoldMemberBonus () {
+        // 1. Skapa ny användare
+        User myUser = new User("Anna", "Lösenord1!");
+
+        // 2. Test för lägga till ett nytt namn och sen hämta den
+        myUser.setTypeOfUser("normal");
+
+        // 3. Kontrollera att hon har 5 solidus direkt
+        assertEquals(5, myUser.getSolidus());
+        for (int i = 0; i < 20; i++) {
+            myUser.login();
+        }
+
+        // 4. Anropa metoden solidus ocg hämta solidus
+        int solius = myUser.getSolidus();
+        assertEquals(45, myUser.getSolidus());
+        assertEquals("gold member", myUser.getTypeOfUser());
+    }
+
+    @Test
+    public void testBuySticker () {
+        // 1. Skapa ny användare (får 5 solidus automatiskt)
+        User myUser = new User("Anna", "Lösenord1!");
+
+        // 2. Köp en sticker för 5 solidus
+        myUser.buy(5);
+
+        // 3. Kontrollera att saldot nu är 0
+        assertEquals(0, myUser.getSolidus());
+    }
+
+    @Test
+    public void testBuyT_Shirt () {
+        // 1. Skapa ny användare (får 5 solidus automatiskt)
+        User myUser = new User("Anna", "Lösenord1!");
+
+        // 2. Kontrollera att hon har 5 solidus direkt
+        assertEquals(5, myUser.getSolidus());
+        for (int i = 0; i < 10; i++) {
+            myUser.login();
+        }
+
+        // 2. Köp en sticker för 5 solidus
+        myUser.buy(15);
+
+        // 3. Kontrollera att saldot nu är 0
+        assertEquals(0, myUser.getSolidus());
+    }
+
+    @Test
+    public void testBuyHoodie() {
+        // 1. Skapa ny användare (får 5 solidus automatiskt)
+        User myUser = new User("Anna", "Lösenord1!");
+
+        // Logga in 15 gånger -> totalt 20 solidus
+        for (int i = 0; i < 15; i++) {
+            myUser.login();
+        }
+
+        // Köp Hoodie för 20
+        myUser.buy(20);
+
+        // Saldot ska vara 0
+        assertEquals(0, myUser.getSolidus());
+    }
+
+    @Test
+    public void testToExpensive() {
+        User myUser = new User("Anna", "Lösenord1!");
+
+        // Bli Gold Member (45 solidus totalt)
+        for (int i = 0; i < 20; i++) {
+            myUser.login();
+        }
+        assertEquals(45, myUser.getSolidus()); // Kontroll
+
+        // Shoppa loss!
+        myUser.buy(20); // Hoodie
+        myUser.buy(15); // T-shirt
+        myUser.buy(5);  // Sticker
+        myUser.buy(5);  // Sticker
+
+        // Nu borde saldot vara 0
+        assertEquals(0, myUser.getSolidus());
+
+
+        // Vi försöker köpa en sticker till för 5 kr, men har 0 kr.
+        myUser.buy(5);
+
+        // Saldot ska fortfarande vara 0 (inte -5)
+        assertEquals(0, myUser.getSolidus());
     }
 }

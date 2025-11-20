@@ -3,6 +3,9 @@ package tdd.userTest;
 public class User {
 
     private String userName, password;
+    private String typeOfUser= "normal";
+    int loginCount;
+    private int solidus = 5;
 
     // Konstruktorn
     public User(String userName, String password) {
@@ -54,6 +57,9 @@ public class User {
         // Skapa och initiera flaggan här (lokal variabel)
         boolean hasSpecialCharacters = false;
 
+        boolean hasUpperCase = false;
+        boolean hasLowerCase = false;
+
         // 2. Loop: Kontrollera om det finns specialtecken
         for (int i = 0; i < newPassword.length(); i++) {
 
@@ -61,14 +67,67 @@ public class User {
 
             if (c == '!' || c == '#' || c == '$' || c == '&') {
                 hasSpecialCharacters = true;
-                break; // Vi hittade ett tecken, så vi kan stoppa loopen
+            }
+
+            if (Character.isUpperCase(c)) {
+                hasUpperCase = true;
+            }
+
+            if (Character.isLowerCase(c)) {
+                hasLowerCase = true;
             }
         }
 
         // 3. Slutgiltig kontroll och tilldelning
         // Lösenordet sparas ENDAST om flaggan är true
-        if (hasSpecialCharacters) {
+        if (hasSpecialCharacters && hasUpperCase && hasLowerCase) {
             password = newPassword;
         }
+    }
+
+    // Metod för hämta användare
+    public String getTypeOfUser() {
+        return typeOfUser;
+    }
+
+    // metod för att lägga till ny användare
+    public void setTypeOfUser(String typeOfUser) {
+
+        if (typeOfUser.equals("normal") || typeOfUser.equals("admin") ||
+            typeOfUser.equals("super") ||typeOfUser.equals("gold member")) {
+
+            this.typeOfUser = typeOfUser;
+        }
+    }
+
+    // Metod för att kunna login som användare
+    public void login() {
+        loginCount++;
+        solidus++;
+
+        // Villkor för login
+        if (loginCount == 20) {
+
+            setTypeOfUser("gold member");
+            // eller  typeOfUser ="gold member";
+
+            // Ge bonus
+            solidus += 20; // solidus = solidus + 20;
+        }
+    }
+
+    // Metod för att ge poäng (solidus)
+    public int getSolidus() {
+        return solidus;
+    }
+
+    // Metod för köpa
+    public void buy(int cost) {
+
+        // Villkor för expensive
+        if (cost>solidus){
+            return;
+        }
+        solidus = solidus -cost; // eller solidus-=cost;
     }
 }
