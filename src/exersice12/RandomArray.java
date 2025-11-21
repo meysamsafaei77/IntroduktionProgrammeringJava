@@ -28,7 +28,7 @@ public class RandomArray {
         RandomGenerator generator = new RandomGenerator();
         int [] newArray =generator.randomArray();
         for (int i = 0; i< newArray.length; i++) {
-            System.out.print(newArray[i] +" x");
+            System.out.print(newArray[i] +" ");
         }
 
         // Storleken på arrayn är också ett slumptal ifrån 1-100
